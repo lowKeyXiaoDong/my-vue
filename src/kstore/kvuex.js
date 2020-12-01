@@ -5,6 +5,7 @@ class Store {
     // 选项处理
     this._mutations = options.mutations
     this._actions = options.actions
+    this._getters = options.getters
 
     this._vm = new Vue({
       data: {
@@ -14,6 +15,11 @@ class Store {
 
     this.commit = this.commit.bind(this)
     this.dispatch = this.dispatch.bind(this)
+
+    this.getters = {
+      
+    }
+
   }
 
   get state() {
