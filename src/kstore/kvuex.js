@@ -5,7 +5,7 @@ class Store {
     // 选项处理
     this._mutations = options.mutations
     this._actions = options.actions
-    this._getters = options.getters
+    this.getters = options.getters
 
     this._vm = new Vue({
       data: {
@@ -16,10 +16,19 @@ class Store {
     this.commit = this.commit.bind(this)
     this.dispatch = this.dispatch.bind(this)
 
-    this.getters = {
-      
-    }
+    this.resetStoreVM()
+  }
 
+  resetStoreVM() {
+    Object.keys(this.getters).forEach((item) => {
+      const rawGetters = this.getters[item]
+      const that = this
+      Object.defineProperty(this.getters, item, {
+        get() {
+          return rawGetters(that._vm._data.$$state)
+        },
+      })
+    })
   }
 
   get state() {
@@ -43,7 +52,7 @@ class Store {
   }
 
   // 实现dispatch方法
-  dispatch (type, payload) {
+  dispatch(type, payload) {
     const entry = this._actions[type]
 
     if (!entry) {
