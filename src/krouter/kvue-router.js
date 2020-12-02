@@ -34,7 +34,7 @@ VueRouter.install = function(_Vue) {
       },
     },
     render(h) {
-      return h('a', { attrs: { href: this.to } }, this.$slots.default)
+      return h('a', { attrs: { href: '#' + this.to } }, this.$slots.default)
     },
   })
 

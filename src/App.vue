@@ -1,8 +1,8 @@
 <template>
   <div id="app">
     <div id="nav">
-      <router-link to="#/">Home</router-link> |
-      <router-link to="#/about">About</router-link>
+      <router-link to="/">Home</router-link> |
+      <router-link to="/about">About</router-link>
     </div>
     <div @click="$store.dispatch('add')">{{$store.state.count}}</div>
     <div @click="$store.commit('add')">async: {{$store.state.count}}</div>
