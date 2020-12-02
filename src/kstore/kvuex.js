@@ -16,10 +16,11 @@ class Store {
     this.commit = this.commit.bind(this)
     this.dispatch = this.dispatch.bind(this)
 
-    this.resetStoreVM()
+    this._getters()
   }
 
-  resetStoreVM() {
+  // getters实现
+  _getters() {
     Object.keys(this.getters).forEach((item) => {
       const rawGetters = this.getters[item]
       const that = this
