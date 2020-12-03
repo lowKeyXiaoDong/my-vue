@@ -11,19 +11,19 @@ class Store {
         $$state: options.state,
       },
       computed: {
-        getters: function () {
+        getters: function() {
           let proxy = {}
-          Object.keys(options.getters).forEach(item => {
+          Object.keys(options.getters).forEach((item) => {
             const rawGetters = options.getters[item]
             Object.defineProperty(proxy, item, {
               get: () => {
                 return rawGetters(options.state)
-              }
+              },
             })
           })
           return proxy
-        }
-      }
+        },
+      },
     })
 
     this.commit = this.commit.bind(this)
