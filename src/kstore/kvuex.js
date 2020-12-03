@@ -5,46 +5,35 @@ class Store {
     // 选项处理
     this._mutations = options.mutations
     this._actions = options.actions
+    this._warpGetters = options.getters
+
+    // 定义computed
+    const computed = {}
+    this.getters = {}
+    const store = this
+
+    Object.keys(this._warpGetters).forEach(key => {
+      const fn = store._warpGetters[key]
+
+      computed[key] = function () {
+        return fn(store.state)
+      }
+
+      Object.defineProperty(store.getters, key, {
+        get: () => store._vm[key]
+      })
+    })
 
     this._vm = new Vue({
       data: {
         $$state: options.state,
       },
-      computed: {
-        getters: function () {
-          let proxy = {}
-          Object.keys(options.getters).forEach(item => {
-            const rawGetters = options.getters[item]
-            Object.defineProperty(proxy, item, {
-              get: () => {
-                return rawGetters(options.state)
-              }
-            })
-          })
-          return proxy
-        }
-      }
+      computed
     })
 
     this.commit = this.commit.bind(this)
     this.dispatch = this.dispatch.bind(this)
-
-    this.getters = this._vm.getters
-    // this._getters()
   }
-
-  // getters实现
-  // _getters() {
-  //   Object.keys(this.getters).forEach((item) => {
-  //     const rawGetters = this.getters[item]
-  //     const that = this
-  //     Object.defineProperty(this.getters, item, {
-  //       get() {
-  //         return rawGetters(that._vm._data.$$state)
-  //       },
-  //     })
-  //   })
-  // }
 
   get state() {
     return this._vm._data.$$state
