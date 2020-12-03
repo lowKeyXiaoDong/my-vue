@@ -10,6 +10,8 @@
     <p>{{count}}</p>
     <p h-text='count'></p>
     <p h-html='desc'></p>
+
+    <button @click="add">click</button>
   </div>
 
   <script src="./hvue.js"></script>
@@ -19,12 +21,17 @@
       data: {
         count: 1,
         desc: '<p>韩晓东<span style="color: red">辛苦了</span></p>'
+      },
+      methods: {
+        add () {
+          this.count++
+        }
       }
     })
 
-    setInterval(() => {
-      app.count++
-    }, 1000)
+    // setInterval(() => {
+    //   app.count++
+    // }, 1000)
   </script>
 </body>
 </html>

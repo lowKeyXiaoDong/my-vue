@@ -105,6 +105,11 @@ class Compile {
     return attrName.startsWith('h-')
   }
 
+  // 判断是不是事件
+  isDomFn(attrName) {
+    return attrName.startsWith('@')
+  }
+
   compile(el) {
     // 遍历node节点
     el.childNodes.forEach(node => {
@@ -158,8 +163,16 @@ class Compile {
         const dir = attrName.substring(2)
         // 指令
         this[dir] && this[dir](node, exp)
+      } else if (this.isDomFn(attrName)) {
+        const dir = attrName.substring(1)
+        // dom事件
+        this[dir] && this[dir](node, exp, dir)
       }
     })
+  }
+
+  click(node, exp, dir) {
+    node.addEventListener(dir, this.$vm.$options.methods[exp].bind(this.$vm))
   }
 
   text(node, exp) {
