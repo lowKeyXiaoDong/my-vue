@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id="app">
+    <p>{{count}}</p>
+    <p h-text='count'></p>
+    <p h-html='desc'></p>
+  </div>
+
+  <script src="./hvue.js"></script>
+  <script>
+    const app = new HVue({
+      el: '#app',
+      data: {
+        count: 1,
+        desc: '<p>韩晓东<span style="color: red">辛苦了</span></p>'
+      }
+    })
+
+    setInterval(() => {
+      app.count++
+    }, 1000)
+  </script>
+</body>
+</html>
