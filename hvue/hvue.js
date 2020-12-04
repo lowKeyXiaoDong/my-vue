@@ -2,12 +2,11 @@ function defineReactive(obj, key, val) {
   // 递归调用
   observer(val)
 
+  // 建立管理Watcher
   const dep = new Dep()
 
   Object.defineProperty(obj, key, {
     get() {
-      console.log('get', key)
-
       // 判断一下Dep.target是否存在,存在收集依赖
       Dep.target && dep.addDep(Dep.target)
 
@@ -15,7 +14,6 @@ function defineReactive(obj, key, val) {
     },
     set(v) {
       if (v !== val) {
-        console.log('set', key, val)
         val = v
 
         dep.notify()
@@ -77,7 +75,7 @@ class HVue {
     // 进行响应式处理
     observer(this.$data)
 
-    // 1.1 代理属性
+    // 1.1 代理 将$data的属性代理到this上，外部调用使用this.count 可以获取到
     proxy(this)
 
     // 2: 编译
@@ -85,6 +83,7 @@ class HVue {
   }
 }
 
+// 编译类
 class Compile {
   constructor(el, vm) {
     // 保存
@@ -122,7 +121,6 @@ class Compile {
           this.compile(node)
         }
       } else if (this.isInter(node)) {
-        console.log('文本节点', node.textContent);
         this.compileText(node)
       }
     })
@@ -143,11 +141,6 @@ class Compile {
   // 编译文本节点
   compileText(node) {
     this.update(node, RegExp.$1, 'text')
-    // node.textContent = this.$vm[RegExp.$1]
-  }
-
-  textUpdater(node, val) {
-    node.textContent = val
   }
 
   // 编辑元素节点
@@ -176,12 +169,14 @@ class Compile {
   }
 
   text(node, exp) {
-    // node.textContent = this.$vm[exp]
     this.update(node, exp, 'text')
   }
 
+  textUpdater(node, val) {
+    node.textContent = val
+  }
+
   html(node, exp) {
-    // node.innerHTML = this.$vm[exp]
     this.update(node, exp, 'html')
   }
 
