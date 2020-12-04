@@ -32,8 +32,8 @@ class VueRouter {
 
       if (route.path !== '/' && this.current.indexOf(route.path) !== -1) {
         this.matched.push(route)
-        if (route.children.length > 0) {
-          this.match(route)
+        if (route.children) {
+          this.match(route.children)
         }
 
         return
