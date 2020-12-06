@@ -186,11 +186,15 @@ class Compile {
 
   // h-model 的实现
   model(node, exp) {
-    const that = this
-    node.value = this.$vm[exp]
-    node.addEventListener('input', function (e) {
-      that.$vm[exp] = e.target.value
+    this.update(node, exp, 'model')
+
+    node.addEventListener('input', (e) => {
+      this.$vm[exp] = e.target.value
     })
+  }
+
+  modelUpdater(node, value) {
+    node.value = value
   }
 }
 
