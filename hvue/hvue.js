@@ -183,6 +183,15 @@ class Compile {
   htmlUpdater(node, val) {
     node.innerHTML = val
   }
+
+  // h-model 的实现
+  model(node, exp) {
+    const that = this
+    node.value = this.$vm[exp]
+    node.addEventListener('input', function (e) {
+      that.$vm[exp] = e.target.value
+    })
+  }
 }
 
 // 监听器: 负责页面中一个依赖的更新
