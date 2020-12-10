@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="./hvue2.js"></script>
+</head>
+<body>
+  <div id="app">
+    <p>{{count}}</p>
+  </div>
+
+  <script>
+    const app = new HVue2({
+      el: '#app',
+      data: {
+        count: 1
+      }
+    })
+
+    setInterval(() => {
+      app.count++
+    }, 1000)
+  </script>
+</body>
+</html>
