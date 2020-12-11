@@ -80,10 +80,157 @@ class HVue2 {
 
     // 2: 编译
     // new Compile(options.el, this)
+
+    // 如存在el 执行$mount
+    if (options.el) {
+      this.$mount(options.el)
+    }
   }
 
+  // 挂载$mount
   $mount (el) {
-    
+    this.$el = document.querySelector(el)
+
+    const updateComponent = () => {
+      const { render } = this.$options
+
+      // 调用render获取vnode
+      const vnode = render.call(this, this.$createElement)
+
+      // 改变真实dom
+      this._update(vnode)
+    }
+
+    // 创建Watcher 实例
+    new Watcher(this, updateComponent)
+  }
+
+  $createElement (tag, props, children) {
+    return { tag, props, children }
+  }
+
+  _update (vnode) {
+    // 获取上一次的vnode
+    const parentVnode = this._vnode
+
+    if (!parentVnode) {
+      // init 初始化
+      this.__patch__(this.$el, vnode)
+    } else {
+      // update 更新
+      this.__patch__(parentVnode, vnode)
+    }
+  }
+
+  // 新老节点对比 转换真实dom树
+  __patch__ (oldVnode, vnode) {
+    // nodeType 存在为真实dom
+    if (oldVnode.nodeType) {
+      // init
+      const parent = oldVnode.parentElement
+      const refElm = oldVnode.nextSibling
+
+      // props
+
+      // child
+      const el = this.createElm(vnode)
+
+      parent.insertBefore(el, refElm)
+      parent.removeChild(oldVnode)
+    } else { // update
+      const el = vnode.el = oldVnode.el
+      // props
+      const oldProps = oldVnode.props || {}
+      const newProps = vnode.props || {}
+      for (const key in newProps) {
+        el.setAttribute(key, newProps[key])
+      }
+      for (const key in oldProps) {
+        if (!(key in newProps)) {
+          el.removeAttribute(key)
+        }
+      }
+
+      // child
+      const oldCh = oldVnode.children
+      const newCh = vnode.children
+      // text
+      if (typeof newCh === 'string') {
+        if (typeof oldCh === 'string') {
+          if (oldCh !== newCh) {
+            el.textContent = newCh
+          }
+        } else {
+          el.textContent = newCh
+        }
+      } else { // child array
+        if (typeof oldCh === 'string') {
+          el.innerHTML = ''
+          newCh.forEach(child => {
+            el.appendChild(this.createElm(child))
+          })
+        } else { // 重排
+          this.updateChild(el, oldCh, newCh)
+        }
+      }
+    }
+
+    this._vnode = vnode
+  }
+
+  updateChild (el, oldCh, newCh) {
+    const parentElm = el
+    const len = Math.max(oldCh.length, newCh.length)
+
+    for (let i = 0; i < len; i++) {
+      this.__patch__(oldCh[i], newCh[i])
+    }
+
+    // newCh 若是更长的那个， 说明新增
+    if (newCh.length > oldCh.length) {
+      newCh.slide(len).forEach(child => {
+        const el = this.createElm(child)
+        parentElm.appendChild(el)
+      })
+    } else if (newCh.length < oldCh.length) {
+      // oldCh 若是更长， 说明有删减
+      oldCh.slide(len).forEach(child => {
+        parentElm.removeChild(child.el)
+      })
+    }
+  }
+
+  // vnode --> dom
+  createElm(vnode) {
+    const el = document.createElement(vnode.tag)
+
+    // props
+    if (vnode.props) {
+      for (const key in vnode.props) {
+        const value = vnode.props[key]
+
+        el.setAttribute(key, value)
+      }
+    }
+
+    // child
+    if (vnode.children) {
+      if (typeof vnode.children === 'string') {
+        // string
+        el.textContent = vnode.children
+      } else {
+        // child array
+        vnode.children.forEach(v => {
+          const child = this.createElm(v)
+          el.appendChild(child)
+        })
+      }
+    }
+
+    // 保存创建真实dom
+    vnode.el = el
+
+    return el
   }
 }
 
@@ -204,29 +351,35 @@ class Compile {
 
 // 监听器: 负责页面中一个依赖的更新
 class Watcher {
-  constructor(vm, key, updateFn) {
+  constructor(vm, fn) {
     this.vm = vm
-    this.key = key
-    this.updateFn = updateFn
+    
+    this.getter = fn
 
+    this.get()
+
+  }
+
+  get() {
     // 获取一下key的值触发getter方法,在那边创建Watcher 和 Dep的映射关系
     Dep.target = this
-    this.vm[this.key]
+    this.getter.call(this.vm)
     Dep.target = null
   }
 
   update() {
-    this.updateFn.call(this.vm, this.vm[this.key])
+    this.get()
   }
 }
-
+// Dep Wacther  1 : N
 class Dep {
   constructor() {
-    this.deps = []
+    // 去重
+    this.deps = new Set()
   }
 
   addDep(dep) {
-    this.deps.push(dep)
+    this.deps.add(dep)
   }
 
   notify() {

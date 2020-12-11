@@ -16,6 +16,17 @@
       el: '#app',
       data: {
         count: 1
+      },
+      render (h) {
+        // const p1 = document.createElement('p')
+        // p1.textContent = this.count
+
+        // return p1
+
+        // vnode
+        return h('div', { id: '#app', title: this.count + '' }, [
+          h('p', null, this.count + '')
+        ])
       }
     })
 
