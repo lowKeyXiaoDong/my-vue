@@ -11,7 +11,7 @@ class Store {
         $$state: options.state,
       },
       computed: {
-        getters: function() {
+        getters: function () {
           let proxy = {}
           Object.keys(options.getters).forEach((item) => {
             const rawGetters = options.getters[item]
@@ -30,21 +30,7 @@ class Store {
     this.dispatch = this.dispatch.bind(this)
 
     this.getters = this._vm.getters
-    // this._getters()
   }
-
-  // getters实现
-  // _getters() {
-  //   Object.keys(this.getters).forEach((item) => {
-  //     const rawGetters = this.getters[item]
-  //     const that = this
-  //     Object.defineProperty(this.getters, item, {
-  //       get() {
-  //         return rawGetters(that._vm._data.$$state)
-  //       },
-  //     })
-  //   })
-  // }
 
   get state() {
     return this._vm._data.$$state
