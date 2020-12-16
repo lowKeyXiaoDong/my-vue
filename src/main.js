@@ -2,6 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './krouter'
 import store from './kstore'
+import '@/icons'
 
 Vue.config.productionTip = false
 

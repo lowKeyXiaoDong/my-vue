@@ -11,6 +11,8 @@
         <button @click="login">登录</button>
       </HFromItem>
     </HFrom>
+
+    <svg-icon icon-class="wx"></svg-icon>
   </div>
 </template>
 
