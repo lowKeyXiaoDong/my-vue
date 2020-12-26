@@ -1,9 +1,9 @@
 const resolve = (dir) => require('path').join(__dirname, dir)
 
 module.exports = {
-  publicPath: '/bast-parctice',
+  publicPath: '/',
   devServer: {
-    port: 7070,
+    port: 3000,
   },
   // configureWebpack: {
   //   resolve: {

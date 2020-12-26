@@ -11,8 +11,9 @@
         <button @click="login">登录</button>
       </HFromItem>
     </HFrom>
-
     <svg-icon icon-class="wx"></svg-icon>
+
+    <HTable></HTable>
   </div>
 </template>
 
@@ -20,6 +21,7 @@
 import HInput from '@/components/HInput.vue'
 import HFromItem from '@/components/HFromItem.vue'
 import HFrom from '@/components/HFrom.vue'
+import HTable from '@/components/HTable'
 
 export default {
   name: 'Home',
@@ -51,6 +53,7 @@ export default {
     HFrom,
     HFromItem,
     HInput,
+    HTable,
   },
 }
 </script>
