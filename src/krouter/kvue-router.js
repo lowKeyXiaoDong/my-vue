@@ -1,10 +1,13 @@
 // 挂载插件
+// 存在Vue的实例
 let Vue
 class VueRouter {
   constructor(options) {
     this.options = options
 
     const initCurrent = window.location.hash.slice(1) || '/'
+
+    // Vue提供的把值改为响应式的方法
     Vue.util.defineReactive(this, 'current', initCurrent)
 
     window.addEventListener('hashchange', this.onHashChange.bind(this))
@@ -15,9 +18,10 @@ class VueRouter {
   }
 }
 
-VueRouter.install = function(_Vue) {
+VueRouter.install = function (_Vue) {
   Vue = _Vue
 
+  // 利用Vue.mixin的混入扩展this.$router,router-link，router-view组件
   Vue.mixin({
     beforeCreate() {
       if (this.$options.router) {
